@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Matrix -  Special</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #000; 
+    font-family: 'DotGothic16', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .overlay {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    pointer-events: none; /* Allows rain to be seen "through" the words */
+  }
+
+  .center-text {
+    font-size: 12vw;
+    font-weight: 900;
+    /* Blue/Cyan color like we discussed */
+    color: #00d4ff; 
+    letter-spacing: -2px;
+    line-height: 0.8;
+    /* LED Glow effect */
+    text-shadow: 
+      3px 3px 0px #000,
+      -1px -1px 0px #000,
+      0 0 20px #00d4ff,
+      0 0 40px #9d00ff;
+    /* This makes the word "BIRTHDAY" stand out clearly against the rain */
+    background: rgba(0, 0, 0, 0.7); 
+    padding: 20px 40px;
+    display: block;
+    border-radius: 10px;
+  }
+
+  .name {
+    font-size: 3vw;
+    color: #ffffff;
+    letter-spacing: 10px;
+    text-shadow: 0 0 10px #9d00ff;
+    margin-top: 20px;
+    cursor: pointer;
+    pointer-events: auto; /* Makes this part clickable */
+    background: rgba(0, 0, 0, 0.8);
+    display: inline-block;
+    padding: 10px 30px;
+    transition: 0.3s;
+  }
+
+  .name:hover {
+    transform: scale(1.1);
+    color: #00d4ff;
+  }
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="overlay">
+  <div class="center-text">HELLO</div>
+  <div class="name" onclick="showMessage()">AWAK</div>
+</div>
+
+<script>
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+}
+window.addEventListener('resize', resize);
+resize();
+
+const letters = "MOK BROWNIES";
+const fontSize = 14; 
+const columns = Math.floor(canvas.width / fontSize);
+
+const drops = [];
+// --- EFFECT FROM CODE 1: All drops start at exactly 1 for a synchronized fall ---
+for (let x = 0; x < columns; x++) {
+  drops[x] = 1;
+}
+
+function draw() {
+  // Trail effect (0.1 keeps it clear but dark)
+  ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // --- FONT FROM CODE 2: DotGothic16 ---
+  ctx.font = "bold " + fontSize + "px 'DotGothic16'";
+
+  for (let i = 0; i < drops.length; i++) {
+    const text = letters[Math.floor(Math.random() * letters.length)];
+    
+    // Using the Blue/Purple colors we liked
+    // 1. Dark Purple Tail
+    ctx.fillStyle = "#2a004d"; 
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+    // 2. Bright Blue Body
+    ctx.fillStyle = "#00d4ff";
+    ctx.fillText(text, i * fontSize, (drops[i] - 1) * fontSize);
+
+    // Reset logic (same as Code 1)
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+
+    drops[i]++;
+  }
+}
+
+function showMessage() {
+    alert("MAKAN BROWNIES SIK AJAK! 🎂✨\nSAMPAI HATI!");
+}
+
+setInterval(draw, 33); // Speed from Code 1
+</script>
+
+</body>
+</html>
