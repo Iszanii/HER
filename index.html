@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Word Matrix -  Special</title>
+<title>Words Matrix -  Special</title>
 
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
 
@@ -93,7 +93,7 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-const letters = "BE HAPPY";
+const message = " BE HAPPY ";
 const fontSize = 14; 
 const columns = Math.floor(canvas.width / fontSize);
 
@@ -112,7 +112,7 @@ function draw() {
   ctx.font = "bold " + fontSize + "px 'DotGothic16'";
 
   for (let i = 0; i < drops.length; i++) {
-    /* New logic */
+    /* NEW LOGIC */
     const charIndex = drops[i] % message.length;
     const text = message.charAt(charIndex);
     
@@ -135,7 +135,7 @@ function draw() {
 }
 
 function showMessage() {
-    alert("DON'T OVERTHINK, MY LOVE. OVERTHINKING IS THE BIGGEST CAUSE OF OUR UNHAPPINESS. KEEP YOURSELF OCCUPIED. KEEP YOUR MIND OFF THINGS THAT DON'T HELP YOU. BE POSITIVE, BABY ✨✨✨! \nLOVE YOU ♥️!");
+    alert(" DON'T OVERTHINK, MY LOVE. OVERTHINKING IS THE BIGGEST CAUSE OF OUR UNHAPPINESS. KEEP YOURSELF OCCUPIED. KEEP YOUR MIND OFF THINGS THAT DON'T HELP YOU. BE POSITIVE, BABY ✨✨✨! \nLOVE YOU ♥️!");
 }
 
 setInterval(draw, 35); // Speed from Code 1
