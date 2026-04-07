@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Birthday Matrix -  Special</title>
+<title>Words Matrix -  Special</title>
 
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
 
@@ -54,6 +54,7 @@
   .name {
     font-size: 3vw;
     color: #ffffff;
+    font-weight: bold;
     letter-spacing: 10px;
     text-shadow: 0 0 10px #9d00ff;
     margin-top: 20px;
@@ -92,7 +93,7 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-const letters = "MOK BROWNIES";
+const letters = "BE HAPPY";
 const fontSize = 14; 
 const columns = Math.floor(canvas.width / fontSize);
 
@@ -111,7 +112,9 @@ function draw() {
   ctx.font = "bold " + fontSize + "px 'DotGothic16'";
 
   for (let i = 0; i < drops.length; i++) {
-    const text = letters[Math.floor(Math.random() * letters.length)];
+    /* New logic */
+    const charIndex = drops[i] % message.length;
+    const text = message.charAt(charIndex);
     
     // Using the Blue/Purple colors we liked
     // 1. Dark Purple Tail
@@ -132,10 +135,10 @@ function draw() {
 }
 
 function showMessage() {
-    alert("MAKAN BROWNIES SIK AJAK! 🎂✨\nSAMPAI HATI!");
+    alert("DON'T OVERTHINK, MY LOVE. OVERTHINKING IS THE BIGGEST CAUSE OF OUR UNHAPPINESS. KEEP YOURSELF OCCUPIED. KEEP YOUR MIND OFF THINGS THAT DON'T HELP YOU. BE POSITIVE, BABY ✨✨✨! \nLOVE YOU ♥️!");
 }
 
-setInterval(draw, 33); // Speed from Code 1
+setInterval(draw, 35); // Speed from Code 1
 </script>
 
 </body>
