@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultra LED - No Limits</title>
+<title>LED Board - Fixed Animation</title>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
 <style>
   body {
     margin: 0;
     overflow: hidden;
     background-color: #000;
-    background-image: linear-gradient(0deg, transparent 50%, rgba(0, 0, 0, 0.4) 50%);
-    background-size: 100% 4px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,8 +17,26 @@
     font-family: 'DotGothic16', sans-serif;
   }
 
-  canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+  /* Layer 0: The Rain Animation */
+  canvas { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    z-index: 0; 
+  }
 
+  /* Scanline Overlay (Makes it look like a screen) */
+  body::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(0deg, transparent 50%, rgba(0, 0, 0, 0.4) 50%);
+    background-size: 100% 4px;
+    z-index: 1; /* Above rain, below text */
+    pointer-events: none;
+  }
+
+  /* Layer 2: The Text and Button */
   .overlay {
     position: relative;
     z-index: 10;
@@ -28,7 +44,6 @@
     pointer-events: none;
   }
 
-  /* THE LED DOT BOARD EFFECT */
   .center-text {
     font-size: 22vw; 
     font-weight: 900;
@@ -45,7 +60,6 @@
     image-rendering: pixelated;
   }
 
-  /* CLICK ME BUTTON */
   .name {
     font-size: 3vw;
     color: #ffffff;
@@ -69,11 +83,10 @@
     margin-top: 12px;
     animation: breathe 2s infinite;
   }
-
   @keyframes breathe { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
   .name:hover { background: #00d4ff; color: #000; box-shadow: 0 0 40px #00d4ff; }
 
-  /* CUSTOM POP-UP STYLES (Fixes the browser prompt issue) */
+  /* Layer 3: Custom Pop-up (Front) */
   #overlay-blur {
     display: none;
     position: fixed;
@@ -98,16 +111,9 @@
     box-shadow: 0 0 50px rgba(0, 212, 255, 0.5);
     border-radius: 15px;
     min-width: 320px;
-    max-width: 80%;
   }
 
-  #alert-text {
-    font-size: 24px;
-    margin-bottom: 25px;
-    line-height: 1.4;
-    letter-spacing: 1px;
-  }
-
+  #alert-text { font-size: 24px; margin-bottom: 25px; }
   #close-btn {
     background: #00d4ff;
     border: none;
@@ -117,10 +123,7 @@
     font-family: 'DotGothic16', sans-serif;
     cursor: pointer;
     border-radius: 5px;
-    transition: 0.2s;
   }
-
-  #close-btn:hover { background: #fff; box-shadow: 0 0 15px #fff; }
 </style>
 </head>
 <body>
@@ -152,7 +155,6 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-// Background Rain
 const message = "BE HAPPY "; 
 const fontSize = 16; 
 const columns = Math.floor(canvas.width / fontSize);
@@ -160,39 +162,49 @@ const drops = [];
 for (let x = 0; x < columns; x++) { drops[x] = 1; }
 
 function draw() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);a
+  // Clearing with low alpha to create the "trail" effect
+  ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   ctx.font = fontSize + "px 'DotGothic16'";
+
   for (let i = 0; i < drops.length; i++) {
     const charIndex = drops[i] % message.length;
     const text = message.charAt(charIndex);
+    
+    // Faded text
     ctx.fillStyle = "#002233"; 
     ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+    // Glowing head
     ctx.fillStyle = "#00d4ff";
     ctx.fillText(text, i * fontSize, (drops[i]) * fontSize);
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) { drops[i] = 0; }
+
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
     drops[i]++;
   }
 }
 
-// SHOW MESSAGE LOGIC
 function showMessage() {
     const quotes = [
-        "I hope this smile stays on your face forever. Nobody can make you happy with yourself. Be happy with what you are and be generous with it. and you won't have to hunt for happiness. ✨",
-        "You are the best thing that happened today! 💙",
-        "You will never find the right things, if you never let go of the wrong one",
-        "There may be a million things to smile about, but you're definitely my favorite one ",
-        "Remember: You are loved, valued, and enough. I hope you know how brave, important and wonderful you aways are even when you don't feel like it ✨",
-        "Get comfortable with being uncomfortable because that is how you grow",
-        "Your skin isn't a paper, don't cut it. Yur heart isn't a door, don't lock it. Your neck isn't a rope, don't hang it. Your life is too precious, don't end it.",
-        "If you were a vegetable, you'd be a cutecumber",
-        "Words cannot espresso how much you mean to me",
-        "Hidup bukan tentang dipukul lalu kamu membalas, tapi tentang bagaimana kamu mampu berdiri tegak walau banyak pukulan yang kamu terima"
+        "If you were a vegetable, you'd be a cutecumber! 🥒",
+        "I'm soy into you! 🥟",
+        "You're a-maize-ing! 🌽",
+        "Don't go bacon my heart! 🥓",
+        "You're the berry best! 🍓",
+        "Words cannot espresso how much you mean to me! ☕",
+        "You're one in a melon! 🍉",
+        "We make a great pear! 🍐",
+        "You're all I avo wanted! 🥑",
+        "I love you s'more every day! 🍫",
+        "You're flipping fantastic! 🥞",
+        "You've got a pizza my heart! 🍕",
+        "You're sub-lime! 🍋",
+        "I donut know what I'd do without you! 🍩"
     ];
-
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-    
-    // Display custom alert
     document.getElementById('alert-text').innerText = randomQuote;
     document.getElementById('custom-alert').style.display = 'block';
     document.getElementById('overlay-blur').style.display = 'block';
@@ -203,6 +215,7 @@ function closeAlert() {
     document.getElementById('overlay-blur').style.display = 'none';
 }
 
+// Start animation
 setInterval(draw, 50);
 </script>
 
