@@ -2,144 +2,122 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Words Matrix -  Special</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LED Board - Random Quotes</title>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
-
 <style>
   body {
     margin: 0;
     overflow: hidden;
-    background: #000; 
-    font-family: 'DotGothic16', sans-serif;
+    background-color: #000;
+    /* Scan lines background */
+    background-image: linear-gradient(0deg, transparent 50%, rgba(0, 0, 0, 0.4) 50%);
+    background-size: 100% 4px;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    font-family: 'DotGothic16', sans-serif;
   }
-
-  canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .overlay {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    pointer-events: none; /* Allows rain to be seen "through" the words */
-  }
+  canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+  .overlay { position: relative; z-index: 10; text-align: center; pointer-events: none; }
 
   .center-text {
-    font-size: 12vw;
+    font-size: 22vw; 
     font-weight: 900;
-    /* Blue/Cyan color like we discussed */
-    color: #00d4ff; 
-    letter-spacing: -2px;
-    line-height: 0.8;
-    /* LED Glow effect */
-    text-shadow: 
-      3px 3px 0px #000,
-      -1px -1px 0px #000,
-      0 0 20px #00d4ff,
-      0 0 40px #9d00ff;
-    /* This makes the word "BIRTHDAY" stand out clearly against the rain */
-    background: rgba(0, 0, 0, 0.7); 
-    padding: 20px 40px;
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: 2px;
     display: block;
-    border-radius: 10px;
+    /* LED Dot Pattern */
+    background: radial-gradient(circle, #fff 10%, #00d4ff 40%, transparent 70%);
+    background-size: 11px 11px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.8));
+    image-rendering: pixelated;
   }
 
   .name {
     font-size: 3vw;
     color: #ffffff;
-    font-weight: bold;
-    letter-spacing: 10px;
-    text-shadow: 0 0 10px #9d00ff;
-    margin-top: 20px;
+    text-shadow: 0 0 15px #00d4ff;
+    margin-top: 40px;
     cursor: pointer;
-    pointer-events: auto; /* Makes this part clickable */
-    background: rgba(0, 0, 0, 0.8);
+    pointer-events: auto;
+    background: rgba(0, 40, 60, 0.7);
+    border: 2px solid #00d4ff;
+    padding: 15px 45px;
     display: inline-block;
-    padding: 10px 30px;
+    border-radius: 4px;
     transition: 0.3s;
+    letter-spacing: 5px;
   }
-
-  .name:hover {
-    transform: scale(1.1);
-    color: #00d4ff;
-  }
+  .hint { display: block; font-size: 1.2vw; color: #00d4ff; margin-top: 12px; animation: breathe 2s infinite; }
+  @keyframes breathe { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+  .name:hover { background: #00d4ff; color: #000; box-shadow: 0 0 40px #00d4ff; }
 </style>
 </head>
-
 <body>
 
 <canvas id="matrix"></canvas>
-
 <div class="overlay">
   <div class="center-text">HELLO</div>
-  <div class="name" onclick="showMessage()">AWAK</div>
+  <div class="name" onclick="showMessage()">CLICK ME<span class="hint">( A little secret... )</span></div>
 </div>
 
 <script>
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
-
-function resize() {
-  canvas.height = window.innerHeight;
-  canvas.width = window.innerWidth;
-}
+function resize() { canvas.height = window.innerHeight; canvas.width = window.innerWidth; }
 window.addEventListener('resize', resize);
 resize();
 
-const message = " BE HAPPY ";
-const fontSize = 14; 
+const message = "BE HAPPY "; 
+const fontSize = 16; 
 const columns = Math.floor(canvas.width / fontSize);
-
 const drops = [];
-// --- EFFECT FROM CODE 1: All drops start at exactly 1 for a synchronized fall ---
-for (let x = 0; x < columns; x++) {
-  drops[x] = 1;
-}
+for (let x = 0; x < columns; x++) { drops[x] = 1; }
 
 function draw() {
-  // Trail effect (0.1 keeps it clear but dark)
-  ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // --- FONT FROM CODE 2: DotGothic16 ---
-  ctx.font = "bold " + fontSize + "px 'DotGothic16'";
-
+  ctx.font = fontSize + "px 'DotGothic16'";
   for (let i = 0; i < drops.length; i++) {
-    /* NEW LOGIC */
     const charIndex = drops[i] % message.length;
     const text = message.charAt(charIndex);
-    
-    // Using the Blue/Purple colors we liked
-    // 1. Dark Purple Tail
-    ctx.fillStyle = "#2a004d"; 
+    ctx.fillStyle = "#002233"; 
     ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-    // 2. Bright Blue Body
     ctx.fillStyle = "#00d4ff";
-    ctx.fillText(text, i * fontSize, (drops[i] - 1) * fontSize);
-
-    // Reset logic (same as Code 1)
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-      drops[i] = 0;
-    }
-
+    ctx.fillText(text, i * fontSize, (drops[i]) * fontSize);
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) { drops[i] = 0; }
     drops[i]++;
   }
 }
 
+// --- DYNAMIC SINGLE QUOTE LOGIC ---
 function showMessage() {
-    alert(" DON'T OVERTHINK, MY LOVE. OVERTHINKING IS THE BIGGEST CAUSE OF OUR UNHAPPINESS. KEEP YOURSELF OCCUPIED. KEEP YOUR MIND OFF THINGS THAT DON'T HELP YOU. BE POSITIVE, BABY ✨✨✨! \nLOVE YOU ♥️!");
+    const quotes = [
+        "I hope this smile stays on your face forever. Nobody can make you happy with yourself. Be happy with what you are and be generous with it. and you won't have to hunt for happiness. ✨",
+        "You are the best thing that happened today! 💙",
+        "You will never find the right things, if you never let go of the wrong one",
+        "There may be a million things to smile about, but you're definitely my favorite one ",
+        "Remember: You are loved, valued, and enough. I hope you know how brave, important and wonderful you aways are even when you don't feel like it ✨",
+        "Get comfortable with being uncomfortable because that is how you grow",
+        "Your skin isn't a paper, don't cut it. Yur heart isn't a door, don't lock it. Your neck isn't a rope, don't hang it. Your life is too precious, don't end it.",
+        "If you were a vegetable, you'd be a cutecumber",
+        "Words cannot espresso how much you mean to me",
+        "Hidup bukan tentang dipukul lalu kamu membalas, tapi tentang bagaimana kamu mampu berdiri tegak walau banyak pukulan yang kamu terima"
+    ];
+
+    // Pick exactly one random quote
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+    alert(randomQuote);
 }
 
-setInterval(draw, 35); // Speed from Code 1
+setInterval(draw, 50);
 </script>
-
 </body>
 </html>
